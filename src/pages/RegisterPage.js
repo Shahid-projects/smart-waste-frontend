@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import { FiUser, FiMail, FiLock, FiEye, FiEyeOff, FiX, FiCheckCircle, FiAlertTriangle } from 'react-icons/fi';
+// FIX: Using Lucide React icons, which are available in the environment.
+import { User, Mail, Lock, Eye, EyeOff, X, CheckCircle, AlertTriangle } from 'lucide-react';
 
 // Define the URLs based on your deployed environment
 const FRONTEND_URL = 'https://smart-waste-frontend.vercel.app';
@@ -11,7 +12,8 @@ const Notification = ({ message, type, onClose }) => {
     if (!message) return null;
 
     const bgColor = type === 'success' ? 'bg-green-600' : 'bg-red-600';
-    const Icon = type === 'success' ? FiCheckCircle : FiAlertTriangle;
+    // FIX: Using imported Lucide icon names (CheckCircle/AlertTriangle)
+    const Icon = type === 'success' ? CheckCircle : AlertTriangle;
 
     return (
         <div className={`fixed top-4 right-4 z-50 p-4 rounded-lg text-white shadow-xl flex items-center ${bgColor} transition-transform duration-300 ease-out`}
@@ -20,7 +22,8 @@ const Notification = ({ message, type, onClose }) => {
             <Icon className="h-5 w-5 mr-2" />
             <span>{message}</span>
             <button onClick={onClose} className="ml-4 p-1 rounded-full hover:bg-white/20">
-                <FiX className="h-4 w-4" />
+                {/* FIX: Using imported Lucide icon X */}
+                <X className="h-4 w-4" />
             </button>
         </div>
     );
@@ -66,6 +69,23 @@ const RegisterPage = () => {
 
     const onChange = e => setFormData({ ...formData, [e.target.id]: e.target.value });
 
+    // Helper functions for final submission check (must be defined in component scope or imported)
+    const validateUsername = (name) => {
+        if (name.length < 3) return 'Full name must be at least 3 characters.';
+        return null;
+    };
+    const validateEmail = (email) => {
+        if (!/\S+@\S+\.\S+/.test(email)) return 'Email address is invalid.';
+        return null;
+    };
+    const validatePassword = (pw) => {
+        if (pw.length < 8) return 'Password must be at least 8 characters.';
+        if (!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])/.test(pw)) {
+            return 'Password must contain an uppercase, lowercase, number, and special character.';
+        }
+        return null;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
@@ -78,15 +98,29 @@ const RegisterPage = () => {
         if (!password) finalErrors.password = 'Password is required.';
         if (!confirmPassword) finalErrors.confirmPassword = 'Confirmation is required.';
 
-        // Combine with real-time errors
-        const validationFailed = Object.keys({ ...errors, ...finalErrors }).length > 0;
+        // --- FINAL PRE-SUBMISSION VALIDATION ---
+        const submissionErrors = {
+            ...errors, // Include existing real-time errors
+            ...finalErrors
+        };
+        
+        // Re-run validation just before submission using current state values
+        if (validateUsername(fullName)) submissionErrors.fullName = validateUsername(fullName);
+        if (validateEmail(email)) submissionErrors.email = validateEmail(email);
+        if (validatePassword(password)) submissionErrors.password = validatePassword(password);
+        if (password !== confirmPassword) submissionErrors.confirmPassword = 'Passwords do not match.';
+
+        const validationFailed = Object.values(submissionErrors).some(error => error !== null && error !== undefined);
+
 
         if (validationFailed) {
-            setErrors(prev => ({ ...prev, ...finalErrors }));
+            setErrors(submissionErrors);
             showNotification('Please fill in all required fields and fix validation errors.', 'error');
             setIsLoading(false);
             return;
         }
+        // --- END FINAL PRE-SUBMISSION VALIDATION ---
+
 
         const newUser = { fullName, email, password };
 
@@ -139,13 +173,15 @@ const RegisterPage = () => {
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <InputGroup label="Full Name" id="fullName" type="text" icon={FiUser} value={fullName} error={errors.fullName} />
-                    <InputGroup label="Email Address" id="email" type="email" icon={FiMail} value={email} error={errors.email} />
+                    {/* FIX: Using Lucide Icons: User, Mail, Lock */}
+                    <InputGroup label="Full Name" id="fullName" type="text" icon={User} value={fullName} error={errors.fullName} />
+                    <InputGroup label="Email Address" id="email" type="email" icon={Mail} value={email} error={errors.email} />
 
                     <div className="form-group">
                         <label htmlFor="password" className="form-label">Password</label>
                         <div className="input-wrapper">
-                            <FiLock className="input-icon" />
+                            {/* FIX: Using Lucide Icon: Lock */}
+                            <Lock className="input-icon" />
                             <input 
                                 type={showPassword ? 'text' : 'password'} 
                                 id="password" 
@@ -157,13 +193,15 @@ const RegisterPage = () => {
                                 disabled={isLoading}
                             />
                             <div className="password-toggle-icon" onClick={() => setShowPassword(!showPassword)}>
-                                {showPassword ? <FiEyeOff /> : <FiEye />}
+                                {/* FIX: Using Lucide Icons: EyeOff / Eye */}
+                                {showPassword ? <EyeOff /> : <Eye />}
                             </div>
                         </div>
                         {errors.password && <p className="error-text text-sm mt-1">{errors.password}</p>}
                     </div>
 
-                    <InputGroup label="Confirm Password" id="confirmPassword" type="password" icon={FiLock} value={confirmPassword} error={errors.confirmPassword} />
+                    {/* FIX: Using Lucide Icon: Lock */}
+                    <InputGroup label="Confirm Password" id="confirmPassword" type="password" icon={Lock} value={confirmPassword} error={errors.confirmPassword} />
                     
                     <button type="submit" className="w-full py-3 mt-6 text-white font-semibold rounded-lg bg-green-600 hover:bg-green-700 transition duration-200 disabled:bg-green-400" disabled={isLoading}>
                         {isLoading ? 'Creating Account...' : 'Create Account'}
@@ -174,61 +212,6 @@ const RegisterPage = () => {
                     Already have an account? <a href={`${FRONTEND_URL}/login`} className="text-green-600 hover:underline">Sign in here</a>
                 </p>
             </div>
-            
-            {/* Embedded CSS for styling the components */}
-            <style jsx="true">{`
-                .form-group {
-                    margin-bottom: 1rem;
-                }
-                .form-label {
-                    display: block;
-                    font-weight: 500;
-                    color: #4b5563; /* Gray-600 */
-                    margin-bottom: 0.25rem;
-                }
-                .input-wrapper {
-                    position: relative;
-                }
-                .input-icon {
-                    position: absolute;
-                    left: 0.75rem;
-                    top: 50%;
-                    transform: translateY(-50%);
-                    color: #9ca3af; /* Gray-400 */
-                    pointer-events: none;
-                    width: 1.25rem;
-                    height: 1.25rem;
-                }
-                .form-input {
-                    width: 100%;
-                    padding: 0.75rem 1rem 0.75rem 2.5rem; /* Padded left for icon */
-                    border: 1px solid #d1d5db; /* Gray-300 */
-                    border-radius: 0.5rem;
-                    outline: none;
-                    transition: all 0.2s;
-                    color: #1f2937; /* Gray-800 */
-                }
-                .form-input:focus {
-                    border-color: #10b981; /* Green-500 */
-                    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
-                }
-                .input-error {
-                    border-color: #ef4444; /* Red-500 */
-                }
-                .error-text {
-                    color: #ef4444; /* Red-500 */
-                    font-size: 0.75rem;
-                    margin-top: 0.25rem;
-                }
-                .password-toggle-icon {
-                    position: absolute;
-                    right: 0.75rem;
-                    top: 50%;
-                    transform: translateY(-50%);
-                    cursor: pointer;
-                    color: #6b7280; /* Gray-500 */
-                }
-            `}</style>
         </div>
     );
 };
