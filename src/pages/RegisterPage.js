@@ -58,7 +58,7 @@ const RegisterPage = () => {
     try {
       const config = { headers: { 'Content-Type': 'application/json' } };
       const body = JSON.stringify(newUser);
-      await axios.post('http://localhost:5000/api/auth/register', body, config);
+      await axios.post('https://smart-waste-backend.vercel.app/api/auth/register', body, config);
       alert('Registration successful! Please log in.');
       navigate('/login');
     } catch (err) {

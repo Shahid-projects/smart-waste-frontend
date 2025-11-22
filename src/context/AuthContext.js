@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
                 axios.defaults.headers.common['x-auth-token'] = token;
                 try {
                     // Make a request to the backend to get the user's data
-                    const res = await axios.get('http://localhost:5000/api/auth');
+                    const res = await axios.get('https://smart-waste-backend.vercel.app/api/auth');
                     setUser(res.data); // Store the user data in our state
                 } catch (err) {
                     console.error('Could not load user, token might be invalid.', err);
@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }) => {
         const config = { headers: { 'Content-Type': 'application/json' } };
         const body = JSON.stringify({ email, password });
         try {
-            const res = await axios.post('http://localhost:5000/api/auth/login', body, config);
+            const res = await axios.post('https://smart-waste-backend.vercel.app/api/auth/login', body, config);
             localStorage.setItem('token', res.data.token);
             setToken(res.data.token); // This will trigger the useEffect above to load the user
             return res.data;

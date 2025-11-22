@@ -47,7 +47,7 @@ const ClassificationPage = () => {
 
     try {
       // 3. Make the API call to our backend's classification endpoint.
-      const res = await axios.post('http://localhost:5000/api/classify/upload', formData, {
+      const res = await axios.post('https://smart-waste-backend.vercel.app/api/classify/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
