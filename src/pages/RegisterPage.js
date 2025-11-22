@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 // FIX: Using Lucide React icons, which are available in the environment.
 import { User, Mail, Lock, Eye, EyeOff, X, CheckCircle, AlertTriangle } from 'lucide-react';
+// Import the external CSS file (assuming it's named RegisterPage.css and is correctly linked in your project)
+import './RegisterPage.css';
 
 // Define the URLs based on your deployed environment
 const FRONTEND_URL = 'https://smart-waste-frontend.vercel.app';
@@ -11,8 +13,8 @@ const API_URL = 'https://smart-waste-backend.vercel.app/api/auth';
 const Notification = ({ message, type, onClose }) => {
     if (!message) return null;
 
+    // Use Tailwind classes only for non-structural elements like fixed positioning, colors, and shadows
     const bgColor = type === 'success' ? 'bg-green-600' : 'bg-red-600';
-    // FIX: Using imported Lucide icon names (CheckCircle/AlertTriangle)
     const Icon = type === 'success' ? CheckCircle : AlertTriangle;
 
     return (
@@ -22,7 +24,6 @@ const Notification = ({ message, type, onClose }) => {
             <Icon className="h-5 w-5 mr-2" />
             <span>{message}</span>
             <button onClick={onClose} className="ml-4 p-1 rounded-full hover:bg-white/20">
-                {/* FIX: Using imported Lucide icon X */}
                 <X className="h-4 w-4" />
             </button>
         </div>
@@ -69,7 +70,7 @@ const RegisterPage = () => {
 
     const onChange = e => setFormData({ ...formData, [e.target.id]: e.target.value });
 
-    // Helper functions for final submission check (must be defined in component scope or imported)
+    // Helper functions for final submission check 
     const validateUsername = (name) => {
         if (name.length < 3) return 'Full name must be at least 3 characters.';
         return null;
@@ -100,7 +101,7 @@ const RegisterPage = () => {
 
         // --- FINAL PRE-SUBMISSION VALIDATION ---
         const submissionErrors = {
-            ...errors, // Include existing real-time errors
+            ...errors, 
             ...finalErrors
         };
         
@@ -132,7 +133,7 @@ const RegisterPage = () => {
             
             // Clear form and navigate after a delay
             setFormData({ fullName: '', email: '', password: '', confirmPassword: '' });
-            setTimeout(() => window.location.href = `${FRONTEND_URL}/login`, 1000); // Using window.location for full page navigation
+            setTimeout(() => window.location.href = `${FRONTEND_URL}/login`, 1000); 
 
         } catch (err) {
             const errorMsg = err.response?.data?.message || err.response?.data?.errors?.[0]?.msg || 'A network or server error occurred.';
@@ -142,6 +143,7 @@ const RegisterPage = () => {
         }
     };
 
+    // Component helper using CSS classes
     const InputGroup = ({ label, id, type, icon: Icon, value, error }) => (
         <div className="form-group">
             <label htmlFor={id} className="form-label">{label}</label>
@@ -150,6 +152,7 @@ const RegisterPage = () => {
                 <input 
                     type={type} 
                     id={id} 
+                    // Use CSS classes for styling and error indication
                     className={`form-input ${error ? 'input-error' : ''}`} 
                     placeholder={`Enter your ${label.toLowerCase()}`} 
                     value={value} 
@@ -158,29 +161,31 @@ const RegisterPage = () => {
                     disabled={isLoading}
                 />
             </div>
+            {/* Use CSS class for error text styling */}
             {error && <p className="error-text">{error}</p>}
         </div>
     );
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+        // Use the main CSS class defined in RegisterPage.css
+        <div className="register-page min-h-screen flex items-center justify-center bg-gray-100 p-4">
             <Notification {...notification} onClose={() => setNotification({ message: '', type: '' })} />
             
-            <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-2xl">
+            {/* Use the main container CSS class */}
+            <div className="register-container w-full max-w-md bg-white p-8 rounded-xl shadow-2xl">
                 <div className="register-header text-center mb-6">
                     <h1 className="text-3xl font-bold text-gray-800">Join EcoSort</h1>
                     <p className="text-gray-500 mt-1">Create your account to track your environmental impact</p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    {/* FIX: Using Lucide Icons: User, Mail, Lock */}
+                <form onSubmit={handleSubmit} className="register-form space-y-4">
+                    {/* Using Lucide Icons: User, Mail, Lock */}
                     <InputGroup label="Full Name" id="fullName" type="text" icon={User} value={fullName} error={errors.fullName} />
                     <InputGroup label="Email Address" id="email" type="email" icon={Mail} value={email} error={errors.email} />
 
                     <div className="form-group">
                         <label htmlFor="password" className="form-label">Password</label>
                         <div className="input-wrapper">
-                            {/* FIX: Using Lucide Icon: Lock */}
                             <Lock className="input-icon" />
                             <input 
                                 type={showPassword ? 'text' : 'password'} 
@@ -192,24 +197,24 @@ const RegisterPage = () => {
                                 required 
                                 disabled={isLoading}
                             />
+                            {/* The password toggle icon is interactive */}
                             <div className="password-toggle-icon" onClick={() => setShowPassword(!showPassword)}>
-                                {/* FIX: Using Lucide Icons: EyeOff / Eye */}
                                 {showPassword ? <EyeOff /> : <Eye />}
                             </div>
                         </div>
-                        {errors.password && <p className="error-text text-sm mt-1">{errors.password}</p>}
+                        {errors.password && <p className="error-text">{errors.password}</p>}
                     </div>
 
-                    {/* FIX: Using Lucide Icon: Lock */}
                     <InputGroup label="Confirm Password" id="confirmPassword" type="password" icon={Lock} value={confirmPassword} error={errors.confirmPassword} />
                     
-                    <button type="submit" className="w-full py-3 mt-6 text-white font-semibold rounded-lg bg-green-600 hover:bg-green-700 transition duration-200 disabled:bg-green-400" disabled={isLoading}>
+                    {/* Use the CSS button class */}
+                    <button type="submit" className="btn btn-primary submit-btn" disabled={isLoading}>
                         {isLoading ? 'Creating Account...' : 'Create Account'}
                     </button>
                 </form>
 
-                <p className="signin-link text-center text-gray-500 mt-4">
-                    Already have an account? <a href={`${FRONTEND_URL}/login`} className="text-green-600 hover:underline">Sign in here</a>
+                <p className="signin-link">
+                    Already have an account? <a href={`${FRONTEND_URL}/login`}>Sign in here</a>
                 </p>
             </div>
         </div>
