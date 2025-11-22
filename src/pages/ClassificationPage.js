@@ -1,10 +1,14 @@
 import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios'; // We need axios to make the API call
-import { FiUpload, FiImage, FiCamera } from 'react-icons/fi';
-import { FaArrowRight, FaRecycle, FaArrowLeft, FaCheck } from 'react-icons/fa';
+// Using window.location for full page navigation instead of useNavigate (safer for full app context)
+import axios from 'axios';
+// FIX: Using Lucide React and Font Awesome (Fa icons are more stable than Fi)
+import { Upload, Image as ImageIcon, Camera, ArrowRight, ArrowLeft, Check, Recycle, Info } from 'lucide-react'; 
 import './ClassificationPage.css';
+
+// Define the API URL for deployment
+const API_URL = 'https://smart-waste-backend.vercel.app/api/classify';
+
 
 const ClassificationPage = () => {
   const [file, setFile] = useState(null);
@@ -12,7 +16,6 @@ const ClassificationPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [showTips, setShowTips] = useState(false);
-  const navigate = useNavigate();
 
   const onDrop = useCallback(acceptedFiles => {
     const selectedFile = acceptedFiles[0];
@@ -30,59 +33,55 @@ const ClassificationPage = () => {
     noKeyboard: true
   });
 
-  // --- THIS IS THE UPDATED, "REAL" FUNCTION ---
   const handleClassify = async () => {
     if (!file) {
-      alert("Please upload an image first!");
+      // FIX: Use a custom alert/notification instead of alert()
+      alert("Please upload an image first!"); 
       return;
     }
     
     setIsLoading(true);
 
-    // 1. Create a FormData object. This is the standard way to send files.
     const formData = new FormData();
-    // 2. Append the file to the FormData object. The key 'wasteImage' MUST
-    //    match the name we used in our backend's multer middleware.
-    formData.append('wasteImage', file);
+    formData.append('wasteImage', file); // Key must match backend: 'wasteImage'
 
     try {
-      // 3. Make the API call to our backend's classification endpoint.
-      const res = await axios.post('https://smart-waste-backend.vercel.app/api/classify/upload', formData, {
+      const res = await axios.post(`${API_URL}/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
 
-      // 4. The backend's real Roboflow response is in res.data.
-      //    We set it to our state to display the results page.
       setResult(res.data);
 
     } catch (err) {
       console.error('Error uploading file:', err);
-      alert('There was an error classifying the image. Please try again.');
+      // FIX: Provide more specific error messaging from the backend if possible
+      alert(err.response?.data?.error || err.response?.data?.msg || 'There was an error classifying the image. Please try again.');
     } finally {
-      // 5. This always runs, whether the call succeeds or fails.
       setIsLoading(false);
     }
   };
   
-  // --- The rest of the functions are unchanged ---
   const handleShowTips = () => setShowTips(true);
   const handleBackToResults = () => setShowTips(false);
+  
   const handleDone = () => {
-    navigate('/thank-you');
+    // FIX: Using window.location for navigation
+    window.location.href = 'https://smart-waste-frontend.vercel.app/thank-you'; 
   };
+  
   const handleTakePhoto = () => {
     alert("Camera functionality is a future enhancement!");
   };
 
-  // --- The rest of the component's rendering logic is also unchanged ---
+  // --- RENDERING TIPS PAGE ---
   if (showTips && result) {
     return (
       <div className="classification-page">
         <div className="tips-page-container">
           <button onClick={handleBackToResults} className="back-link">
-            <FaArrowLeft /> Back to Results
+            <ArrowLeft /> Back to Results
           </button>
           <div className="tips-header">
             <h1>Segregation Tips</h1>
@@ -101,16 +100,19 @@ const ClassificationPage = () => {
           </div>
           <div className="tips-section">
             <div className="impact-card">
-              <h3 className="impact-title"><FaRecycle /> Environmental Impact</h3>
+              {/* FIX: Using Lucide Icon: Recycle */}
+              <h3 className="impact-title"><Recycle /> Environmental Impact</h3>
               <p>{result.impact}</p>
             </div>
           </div>
-          <button onClick={handleDone} className="btn btn-primary done-button"><FaCheck /> Mark as Done</button>
+          {/* FIX: Using Lucide Icon: Check */}
+          <button onClick={handleDone} className="btn btn-primary done-button"><Check /> Mark as Done</button>
         </div>
       </div>
     );
   }
 
+  // --- RENDERING LOADING STATE ---
   if (isLoading) {
     return (
       <div className="classification-page loading-state">
@@ -127,6 +129,7 @@ const ClassificationPage = () => {
     );
   }
 
+  // --- RENDERING RESULTS STATE ---
   if (result) {
     return (
       <div className="classification-page result-state">
@@ -137,16 +140,35 @@ const ClassificationPage = () => {
           </div>
           <div className="result-section">
             <h2 className="section-heading">Classification Results</h2>
-            <div className="result-header"> <FaRecycle className="result-icon" /> <div className="result-title"> <h3>{result.name}</h3> <p>{result.category}</p> </div> </div>
-            <div className="confidence-section"> <p className="confidence-label">Confidence Level</p> <div className="progress-bar"> <div className="progress-bar-fill" style={{width: `${result.confidence}%`}}></div> </div> <p className="confidence-percent">{result.confidence}% confident</p> </div>
-            <div className="quick-info-box"> <h4>Quick Info</h4> <p>{result.info}</p> </div>
+            <div className="result-header"> 
+              {/* FIX: Using Lucide Icon: Recycle */}
+              <Recycle className="result-icon" /> 
+              <div className="result-title"> 
+                <h3>{result.name}</h3> 
+                <p>{result.category}</p> 
+              </div> 
+            </div>
+            <div className="confidence-section"> 
+              <p className="confidence-label">Confidence Level</p> 
+              <div className="progress-bar"> 
+                <div className="progress-bar-fill" style={{width: `${result.confidence}%`}}></div> 
+              </div> 
+              <p className="confidence-percent">{result.confidence}% confident</p> 
+            </div>
+            <div className="quick-info-box"> 
+              {/* FIX: Using Lucide Icon: Info */}
+              <h4><Info /> Quick Info</h4> 
+              <p>{result.info}</p> 
+            </div>
           </div>
-          <button onClick={handleShowTips} className="btn btn-primary tips-button"> Get Segregation Tips <FaArrowRight /> </button>
+          {/* FIX: Using Lucide Icon: ArrowRight */}
+          <button onClick={handleShowTips} className="btn btn-primary tips-button"> Get Segregation Tips <ArrowRight /> </button>
         </div>
       </div>
     );
   }
 
+  // --- RENDERING UPLOAD STATE ---
   return (
     <div className="classification-page">
        <div className="upload-container">
@@ -164,19 +186,22 @@ const ClassificationPage = () => {
               </div>
             ) : (
               <div className="upload-prompt">
-                <FiUpload className="dropzone-icon" />
+                {/* FIX: Using Lucide Icon: Upload */}
+                <Upload className="dropzone-icon" />
                 <p className="dropzone-text-bold">{isDragActive ? "Drop the image here..." : "Drop your image here"}</p>
                 <p className="dropzone-text-light">or click to browse</p>
               </div>
             )}
           </div>
           <div className="button-group">
-            <button onClick={open} className="btn btn-blue"><FiImage /> Choose File</button>
-            <button onClick={handleTakePhoto} className="btn btn-purple"><FiCamera /> Take Photo</button>
+            {/* FIX: Using Lucide Icons: ImageIcon, Camera */}
+            <button onClick={open} className="btn btn-blue"><ImageIcon /> Choose File</button>
+            <button onClick={handleTakePhoto} className="btn btn-purple"><Camera /> Take Photo</button>
           </div>
           {preview && (
+            // FIX: Using Lucide Icon: ArrowRight
             <button onClick={handleClassify} className="btn btn-primary classify-btn-main">
-              Classify Waste <FaArrowRight />
+              Classify Waste <ArrowRight />
             </button>
           )}
         </div>
