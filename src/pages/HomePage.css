@@ -1,0 +1,279 @@
+/* src/pages/HomePage.css */
+.main-content {
+  padding-top: 80px; /* Offset for fixed navbar */
+}
+
+.hero-section {
+  padding: 6rem 0; /* Full viewport height minus navbar */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.hero-content {
+  max-width: 800px;
+}
+
+.hero-title {
+  font-size: 4rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--text-dark);
+  margin-bottom: 1.5rem;
+}
+
+.hero-title .highlight {
+  color: var(--primary-green);
+}
+
+.hero-subtitle {
+  font-size: 1.125rem;
+  color: var(--text-light);
+  line-height: 1.7;
+  margin-bottom: 2.5rem;
+}
+
+.hero-cta {
+   padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 8px;
+
+  /* 2. Make the button only as wide as its content */
+  width: fit-content;
+  
+  /* 3. This is the magic line that centers it */
+  margin-left: auto;
+  margin-right: auto;
+}
+.hero-cta svg {
+  font-size: 1.1rem; /* Adjust icon size if default is too big/small for 1rem text */
+}
+
+
+
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 3rem;
+  }
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+}
+
+/* --- Styles for the new Info Section --- */
+
+.info-section {
+  padding: 4rem 0;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 3rem;
+  color: var(--text-dark);
+}
+
+.waste-type-card {
+  background-color: var(--white);
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: var(--shadow-md);
+  max-width: 700px; /* Limits the width on very large screens */
+  margin: 0 auto;  /* Centers the card */
+  border: 1px solid var(--border-color);
+}
+
+.card-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  background-color: #E6F9F1; /* A very light green */
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.card-icon-container svg {
+  color: var(--primary-green);
+  font-size: 1.75rem;
+}
+
+.card-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: var(--text-dark);
+}
+
+.waste-list {
+  list-style: none; /* Removes default bullet points */
+  padding-left: 0;
+}
+
+.waste-list li {
+  position: relative;
+  padding-left: 25px; /* Creates space for our custom bullet */
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  color: var(--text-light);
+}
+
+/* This creates the custom green circle bullet point */
+.waste-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
+  background-color: var(--primary-green);
+  border-radius: 50%;
+}
+/* src/pages/HomePage.css */
+
+/* ... (all your existing styles up to waste-type-card) ... */
+
+.waste-type-card {
+  background-color: var(--white);
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: var(--shadow-md);
+  max-width: 700px;
+  margin: 0 auto;
+  border: 1px solid var(--border-color);
+  margin-bottom: 2rem; /* <-- ADD THIS LINE to create space between cards */
+}
+
+/* --- Styles for the new "How to Use" Section --- */
+
+.how-to-section {
+  background-color: #F0FDF4; /* A very light, minty green */
+  padding: 5rem 0;
+}
+
+.steps-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem; /* Space between each step item */
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.step-item {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.step-icon-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background-color: var(--white);
+  border: 2px solid #D1FAE5; /* A slightly darker shade of the background */
+  margin-bottom: 1.5rem;
+}
+
+.step-icon-circle svg {
+  color: var(--primary-green);
+  font-size: 2rem; /* 32px */
+}
+
+.step-item h3 {
+  font-size: 1.25rem; /* 20px */
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 0.5rem;
+}
+
+.step-item p {
+  color: var(--text-light);
+  line-height: 1.6;
+}
+/* --- Styles for the new Waste Safety Guidelines Section --- */
+
+.safety-section {
+  padding: 4rem 0;
+}
+
+.safety-card {
+  background-color: #FEF2F2; /* Very light red */
+  border: 1px solid #FEE2E2;  /* Slightly darker red border */
+  border-radius: 16px;
+  padding: 40px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.card-title-icon {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem; /* Space between icon and text */
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #DC2626; /* Strong red */
+  margin-bottom: 2rem;
+}
+
+.safety-subheading {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.safety-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.safety-list li {
+  position: relative;
+  padding-left: 25px; /* Space for our custom bullet */
+  margin-bottom: 0.75rem;
+  color: var(--text-light);
+  line-height: 1.6;
+}
+
+/* This creates the custom red circle bullet point */
+.safety-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 12px; /* Adjust vertical alignment */
+  width: 8px;
+  height: 8px;
+  background-color: #EF4444; /* Medium red */
+  border-radius: 50%;
+}
+/* --- Styles for the new "Safe Waste" Card --- */
+
+.safe-card {
+  background-color: #F0FDF4; /* Very light green */
+  border: 1px solid #D1FAE5;  /* Slightly darker green border */
+  border-radius: 16px;
+  padding: 40px;
+  max-width: 800px;
+  margin: 2rem auto 0 auto; /* Adds space above the card */
+}
+
+.card-title-icon-green {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem; /* Space between icon and text */
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--primary-green); /* Use the main green color */
+  margin-bottom: 2rem;
+}
